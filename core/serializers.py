@@ -9,16 +9,28 @@ class UserSerializer(serializers.ModelSerializer):
 
 class VideoSerializer(serializers.ModelSerializer):
     video_file = serializers.SerializerMethodField()
+    image_file = serializers.SerializerMethodField()
 
     class Meta:
         model = Video
-        fields = ['id', 'creator', 'title', 'description', 'hashtags', 'video_file', 'uploaded_at']
+        fields = ['id', 'creator', 'title', 'description', 'hashtags', 'video_file', 'image_file', 'uploaded_at']
 
     def get_video_file(self, obj):
         request = self.context.get('request')
-        if request:
-            return request.build_absolute_uri(obj.video_file.url)
-        return obj.video_file.url
+        if obj.video_file and hasattr(obj.video_file, 'url'):
+            if request:
+                return request.build_absolute_uri(obj.video_file.url)
+            return obj.video_file.url
+        return None
+
+    def get_image_file(self, obj):
+        request = self.context.get('request')
+        if obj.image_file and hasattr(obj.image_file, 'url'):
+            if request:
+                return request.build_absolute_uri(obj.image_file.url)
+            return obj.image_file.url
+        return None
+
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:

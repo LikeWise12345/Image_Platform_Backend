@@ -5,6 +5,10 @@ from django.core.exceptions import ValidationError
 def validate_video_file(value):
     if not value.name.endswith(('.mp4', '.avi', '.mkv')):
         raise ValidationError("Invalid file format. Please upload a valid video file.")
+def validate_image_file(file):
+    # Your image validation logic
+    if not file.name.lower().endswith(('.png', '.jpg', '.jpeg', '.gif')):
+        raise ValidationError('Invalid image file format.')
 
 class User(AbstractUser):
     is_creator = models.BooleanField(default=False)
@@ -29,7 +33,8 @@ class Video(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     hashtags = models.CharField(max_length=255)
-    video_file = models.FileField(upload_to='videos/', validators=[validate_video_file])
+    video_file = models.FileField(upload_to='videos/',blank=True, null=True, validators=[validate_video_file])
+    image_file = models.ImageField(upload_to='images/', blank=True, null=True, validators=[validate_image_file])
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
 class Comment(models.Model):

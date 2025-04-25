@@ -18,7 +18,6 @@ class VideoListView(APIView):
     def get(self, request):
         videos = Video.objects.all().order_by('-uploaded_at')
         serializer = VideoSerializer(videos, many=True, context={'request': request})
-        print(serializer.data)
         return Response(serializer.data)
 
 class UploadVideoView(APIView):
